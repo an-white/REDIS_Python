@@ -1,9 +1,14 @@
 from datetime import date
 import random
+import json
 
 import redis
 
 r = redis.Redis()
+
+"""
+    basic redis notes and commands
+"""
 
 # set the object to save in memory
 r.mset({"prop": "kazaz"})
@@ -22,14 +27,20 @@ r.smembers(today)
 # get set length
 r.scard(today)
 
-## add a list of object to memory
+## add a list of object to memory deprecate
 random.seed(444)
 hats = {f"hat:{random.getrandbits(32)}": i for i in (
     {
         "color": "black",
         "price": 49.99,
         "style": "fitted",
-        "quantity": 1000,
+        "quantity": {
+            "juan": "cabalo",
+            "b": [1, 3, 2],
+            "obj": {
+                "mierda": 1
+            }
+        },
         "npurchased": 0,
     },
     {
@@ -55,6 +66,28 @@ with r.pipeline() as pipe:
     pipe.execute()
 
 r.bgsave()
+## add a list of object to memory deprecate
 
-a = [10, 20, None, 12]
-newA = list(filter(lambda y: y < 20, filter(lambda x: x > 10 if x else False, a)))
+
+# add object in memory with json.dumps()
+nested_obj = {'color': 'black',
+              'price': 49.99,
+              'style': 'fitted',
+              "lista": [1, 2, 3],
+              'quantity': {
+                  'juan': 'cabalo',
+                  'b': [1, 3, 2],
+                  'obj': {
+                      'mierda': 1
+                  }
+              },
+              'npurchased': 0}
+
+json_nested_obj = json.dumps(nested_obj)
+r.set('nested', json_nested_obj)
+r.get("nested")
+
+item_list = [1, '2', 4]
+json_items = json.dumps(item_list)
+r.set("items", json_items)
+r.get("items")

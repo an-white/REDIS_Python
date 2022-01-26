@@ -56,3 +56,6 @@ a = [
 ]
 
 print(a)
+
+a = [10, 20, None, 12]
+newA = list(filter(lambda y: y < 20, filter(lambda x: x > 10 if x else False, a)))
